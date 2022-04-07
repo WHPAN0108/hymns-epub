@@ -8,8 +8,7 @@ Stanza = namedtuple("Stanza", "parent_hymn, no, text")
 
 def connect_db():
     conn = sqlite3.connect("database/hymns.sqlite")
-    cursor = conn.cursor()
-    return cursor
+    return conn.cursor()
 
 
 def find_related_hymn_list(cursor):
@@ -17,8 +16,9 @@ def find_related_hymn_list(cursor):
     related_hymn_list = []
     for hymn_id, parent_hymn_id in cursor.fetchall():
         new_set = {hymn_id, parent_hymn_id}
-        repeated_index = [i for i, s in enumerate(related_hymn_list) if s & new_set]
-        if repeated_index:
+        if repeated_index := [
+            i for i, s in enumerate(related_hymn_list) if s & new_set
+        ]:
             assert len(repeated_index) == 1
             related_hymn_list[repeated_index[0]] |= new_set
         else:
@@ -42,8 +42,7 @@ def load_hymns(cursor, related_hymn_list, hymn_group):
     for hymn_id, main_category, sub_category, meter in cursor.fetchall():
         sub_category = sub_category or ""
         meter = meter or ""
-        related_hymn_set = [s for s in related_hymn_list if hymn_id in s]
-        if related_hymn_set:
+        if related_hymn_set := [s for s in related_hymn_list if hymn_id in s]:
             related_hymn_ids = sorted(related_hymn_set[0] - {hymn_id})
         else:
             related_hymn_ids = []
