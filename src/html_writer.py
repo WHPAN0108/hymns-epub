@@ -17,9 +17,10 @@ languages = {
 
 
 def write_main_page():
-    body = ""
-    for language in languages.values():
-        body += f"<h1><a href='{language}.html'>{language}</a></h1>"
+    body = "".join(
+        f"<h1><a href='{language}.html'>{language}</a></h1>"
+        for language in languages.values()
+    )
 
     write_html("Liederbuch", "Liederbuch", body, main_html_path)
 
